@@ -8,9 +8,7 @@ import { TasksRepository } from './tasks.repository';
 
 @Injectable()
 export class TasksService {
-  constructor(
-    private tasksRepository: TasksRepository,
-  ) {}
+  constructor(private tasksRepository: TasksRepository) {}
 
   //   getAllTasks(): Task[] {
   //     return this.tasks;
@@ -49,14 +47,20 @@ export class TasksService {
     return this.tasksRepository.createTask(createTaskDto);
   }
 
-  //   deleteTask(id: string): void {
-  //     const found = this.getTaskById(id);
-  //     this.tasks = this.tasks.filter((task) => task.id !== found.id);
-  //   }
+  async deleteTask(id: string): Promise<void> {
+    const result = await this.tasksRepository.delete(id);
 
-  //   updateTaskStatus(id: string, status: TaskStatus): Task {
-  //     const task = this.getTaskById(id);
-  //     task.status = status;
-  //     return task;
-  //   }
+    if (result.affected === 0) {
+      throw new NotFoundException(`Task with ID "${id}" not found."`);
+    }
+  }
+
+  async updateTaskStatus(id: string, status: TaskStatus): Promise<Task> {
+    const task = await this.getTaskById(id);
+
+    task.status = status;
+    await this.tasksRepository.save(task);
+
+    return task;
+  }
 }
