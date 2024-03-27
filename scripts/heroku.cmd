@@ -12,3 +12,7 @@ heroku config:set DB_USERNAME=ucn6hbek2oq6e
 heroku config:set DB_PASSWORD=
 heroku config:set DB_DATABASE=dficot185jutaf
 heroku config:set JWT_SECRET=
+
+git push -f heroku HEAD:master
+
+heroku logs --tail
